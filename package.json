@@ -10,7 +10,15 @@
     "type": "git",
     "url": "git+https://github.com/alfonsofonso/tiquismiquis-bot.git"
   },
-  "author": "@alfonsofonso",
+  "contributors": 
+  [
+    {
+      "name": "@alfonsofonso" 
+    },
+    {
+      "name": "@dcanetma"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/alfonsofonso/tiquismiquis-bot/issues"
