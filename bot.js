@@ -40,6 +40,9 @@ function postSarcasm(status, reply, url, data){
 		  if (!error) {
 		  	console.log('Tweet posted!');
 		    // console.log(tweet);
+		  } else {
+		  	console.log('Error on posting!');
+		  	console.log(error);		  	
 		  }
 		}
 	);
