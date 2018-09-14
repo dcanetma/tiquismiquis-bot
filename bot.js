@@ -57,7 +57,7 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 	      dfd.reject(err);
 			} else {
 				console.log('Got parent tweet data succesfully!');
-				// console.log(data);
+				console.log(data);
 				console.log(data.text);
 				// Add a mention to the user who invoked the command #!important
 				var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.text);
