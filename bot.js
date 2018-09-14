@@ -1,5 +1,7 @@
-// need to use this OTHER twitter lib to post photos, sigh
+// Get config values from config file
 var conf = require('./config.js');
+
+// Using node-twitter library for Stream API and to post updates on Twitter
 var Twitter = require('node-twitter');
 var twitterRestClient = new Twitter.RestClient(
   conf.consumer_key,
@@ -8,6 +10,7 @@ var twitterRestClient = new Twitter.RestClient(
   conf.access_token_secret
 );
 
+// Still using 'twit' lib, plannig to remove
 var Twit = require('twit')
 var T = new Twit({
   consumer_key:         conf.consumer_key,
@@ -16,7 +19,13 @@ var T = new Twit({
   access_token_secret:  conf.access_token_secret
 })
 
-// Helper function
+// Underscore handler to manage promises 
+var _ = require('underscore');
+_.mixin( require('underscore.deferred') );
+
+
+// Helper function. This is what's all about
+// @todo: don't apply vowel change to user names
 function cinvirtString(str) {
 	return str.replace(/[AEOU]/g, 'I')
 						.replace(/[aeou]/g, 'i')
@@ -34,39 +43,57 @@ function cinvirtString(str) {
 // 	}
 // }
 
+// Post the sarcasm on the right thread :)
+function postSarcasm(status, reply, url, data){
+	console.log('Posting tweet');
+	console.log(status);
+	console.log(reply);
+	console.log(url);
+	// console.log(data);
+  twitterRestClient.statusesUpdate(
+    { 
+    	status: text
+    	, in_reply_to_status_id: reply
+    	// status: text + ' ' + url
+			//, status: '@' + data.user.screen_name + ' ' + status
+    }
+  , function (err, data) {
+      if (err) {
+        console.error(err);
+      } else {
+				console.log('Tweet posted! Check your timeline.');
+        console.log(data);
+      }
+    }
+  );      			
+}
+
+
 // Get the tweet by Id using node-twitter to get the original tweet from 'in_reply_to_status_id_str'
-function postSarcasm(tweet) {
-	// Get parent tweet
-	// var Tid = tweet.id;
-	// console.log(tweet);
+function generateSarcasm(tid, tweet) {
+  var dfd = new _.Deferred();
 	T.get('statuses/show/:id', { id: tweet.in_reply_to_status_id_str },
 		function (err, data, response) {
-			if (!err) {
-				console.log('Got parent data OK!');
-				// console.log(data);
-				// console.log(cinvirtString(data.text));
+			if (err) {
+				console.log('Error getting parent tweet. Not posting');
+				// console.log(err);
+	      dfd.reject(err);
+			} else {
+				console.log('Got parent tweet data succesfully!');
+				console.log(data);
+				console.log(data.text);
 				var text = cinvirtString(data.text);
 				var url = 'https://twitter.com/' + data.user.screen_name + '/status/' + data.id_str;
-				// console.log(text);
-				// console.log(url);
-				// Post text via response
-				T.post('statuses/update',
-					{
-						status: text + ' ' + url
-						// status: '@' + data.user.screen_name + ' ' + text ,
-						// in_reply_to_status_id: data.id_str
-					}, function(err, data, response) {
-						console.log('Tweet posted');
-				  	// console.log(data);
-				});
-			} else {
-				console.log('Error');
-				console.log(err);
+				console.log(text);
+				console.log(url);
+				console.log(tid);
+				dfd.resolve(text, tid, url, data);
 			}
 		}
 	);
-}
 
+  return dfd.promise();
+}
 
 // Main function to offer the service to people
 function listenToMasses() {
@@ -86,9 +113,20 @@ function listenToMasses() {
 
   twitterStreamClient.on('tweet', function(tweet) {
       console.log('A new request is on the way');
-			// console.log(tweet);
-      // console.log(tweet);
-      postSarcasm(tweet);
+			console.log(tweet);
+			console.log(tweet.id_str);
+      generateSarcasm(tweet.id_str, tweet)
+      .then(
+      	// status: text to tweet
+      	// reply: id of the tweet to reply to
+      	// url: url of the tweet to reply to in case we want to RT it
+      	function(status, reply, url, data) {
+      		postSarcasm(status, reply, url, data);  		
+      	}
+      )
+			.fail(function( err ){			
+			  console.log(err.message); 
+			});
   });
 
   twitterStreamClient.on('close', function() {
@@ -103,7 +141,7 @@ function listenToMasses() {
 }
 
 // Start listening to masses to offer our Sarcasm for free
- listenToMasses();
+listenToMasses();
 
 // Challenge 2
 // var Tid = '1035490030284881920';
