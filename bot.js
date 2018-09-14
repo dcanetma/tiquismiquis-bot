@@ -49,7 +49,7 @@ function postSarcasm(status, reply, url, data){
 //    and generate the tweet text with the mentions
 function generateSarcasm(tid, reply, one, two, tweet) {
   var dfd = new _.Deferred();
-	client.get('statuses/show/' + reply,
+	client.get('statuses/show/' + reply, { tweet_mode: 'extended' },
 		function (err, data, response) {
 			if (err) {
 				console.log('Error getting parent tweet. Not posting');
@@ -58,9 +58,9 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 			} else {
 				console.log('Got parent tweet data succesfully!');
 				console.log(data);
-				console.log(data.text);
+				console.log(data.full_text);
 				// Add a mention to the user who invoked the command #!important
-				var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.text);
+				var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.full_text);
 				var url = 'https://twitter.com/' + data.user.screen_name + '/status/' + data.id_str;
 				console.log(text);
 				console.log(url);
