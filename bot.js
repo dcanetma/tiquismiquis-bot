@@ -6,7 +6,7 @@ var client = new Twitter({
   access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
-
+	
 // Underscore handler to manage promises 
 var _ = require('underscore');
 _.mixin( require('underscore.deferred') );
@@ -95,7 +95,6 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 
 // 0. Main function to offer the service to people
 function listenToMasses() {
-
   console.log('Start listening to tweets');
 
 	var stream = client.stream(
@@ -108,13 +107,14 @@ function listenToMasses() {
 		// }
 	);
 
+	// Something like this should be possible to avoid duplicate processes
   // if (stream.isRunning())
   // {
   //   stream.stop();
   // }
 	
 	stream.on('data', function(tweet) {
-    console.log('A new request is on the way by @' + tweet.user.screen_name + ' that is meant to ' + tweet.in_reply_to_screen_name);
+    console.log('A new request is on the way by @' + tweet.user.screen_name + ' that is meant to @' + tweet.in_reply_to_screen_name);
 	  // console.log(tweet);
 	  // console.log(tweet.text);
 		// console.log(tweet.id_str);
