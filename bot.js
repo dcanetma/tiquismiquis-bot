@@ -55,6 +55,7 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 	client.get('statuses/show/' + reply, { tweet_mode: 'extended' },
 		function (err, data, response) {
 			if (err) {
+				// This version does nothing when there's no previous tweet
 				console.log('Error getting parent tweet. Not posting');
 				// console.log(err);
 	      dfd.reject(err);
