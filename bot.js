@@ -20,7 +20,10 @@ function cinvirtString(str) {
 						.replace(/[AEOU]/g, 'I')
 						.replace(/[aeou]/g, 'i')
 						.replace(/[áéóú]/g, 'í')
-						.replace(/[àèò]/g,  'ì');
+						.replace(/[àèò]/g,  'ì')
+						.replace(/ ci/, ' qui')
+						.replace(/ qii/, ' qui')
+						.replace(/ qií/, ' quí');
 }
 
 // 2. Post the sarcasm on the right thread :)
@@ -143,7 +146,7 @@ listenToMasses();
 // getParentTweet(Tid);
 
 // Challenge 1
-// var strTest = 'Hello Twitter! #myfirstTweet';
+// var strTest = 'Para los que alegan que no detienen a Willy Toledo por blasfemia sino por no comparecer, creo que este tuit sí que deja claro por qué lo detienen.';
 // console.log(strTest);
 // console.log('---');
 // console.log(cinvirtString(strTest));
