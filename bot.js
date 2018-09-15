@@ -60,7 +60,7 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 	      dfd.reject(err);
 			} else {
 				console.log('Got parent tweet data succesfully!');
-				console.log(data);
+				// console.log(data);
 				console.log(data.full_text);
 				// Add a mention to the user who invoked the command #!important
 				var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.full_text);
@@ -80,16 +80,21 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 function listenToMasses() {
 
   console.log('Start listening to tweets');
-	
+
 	var stream = client.stream(
 		'statuses/filter', 
 		{
 			track: '@istipidi'
 		}, 
 		{
-			port: process.env.PORT || 5000
+			port: process.env.PORT || 5000  // This line is necessary when deploying on Heroku
 		}
 	);
+
+  // if (stream.isRunning())
+  // {
+  //   stream.stop();
+  // }
 	
 	stream.on('data', function(tweet) {
     console.log('A new request is on the way by @' + tweet.user.screen_name + ' that is meant to ' + tweet.in_reply_to_screen_name);
