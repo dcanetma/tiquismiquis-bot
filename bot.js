@@ -81,7 +81,15 @@ function listenToMasses() {
 
   console.log('Start listening to tweets');
 	
-	var stream = client.stream('statuses/filter', {track: '@istipidi'});
+	var stream = client.stream(
+		'statuses/filter', 
+		{
+			track: '@istipidi'
+		}, 
+		{
+			port: process.env.PORT || 5000
+		}
+	);
 	
 	stream.on('data', function(tweet) {
     console.log('A new request is on the way by @' + tweet.user.screen_name + ' that is meant to ' + tweet.in_reply_to_screen_name);
