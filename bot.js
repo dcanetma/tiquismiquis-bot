@@ -22,8 +22,9 @@ function cinvirtString(str) {
 						.replace(/[áéóú]/g, 'í')
 						.replace(/[àèò]/g,  'ì')
 						.replace(/ ci/, ' qui')
-						.replace(/ qii/, ' qui')
-						.replace(/ qií/, ' quí');
+						.replace(/qii/, 'qui')
+						.replace(/qií/, 'quí')
+						.replace(/(?<=\w)ci(?=\w)/, 'qui');
 }
 
 // 2. Post the sarcasm on the right thread :)
