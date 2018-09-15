@@ -25,27 +25,40 @@ function cinvirtString(str) {
 
 // 2. Post the sarcasm on the right thread :)
 function postSarcasm(status, reply, url, data){
-	console.log('Posting tweet');
+	console.log('Posting tweet with image');
 	// console.log(status);
 	// console.log(reply);
 	// console.log(url);
 	// console.log(data);
-	client.post('statuses/update', 
-		{
-			// Add a mention to the user who the command is directed to #!important
-    	status: status 
-    	, in_reply_to_status_id: reply // Add the reply tweet string id
-		}, 
-		function(error, tweet, response) {
-		  if (!error) {
-		  	console.log('Tweet posted!');
-		    // console.log(tweet);
-		  } else {
-		  	console.log('Error on posting!');
-		  	console.log(error);		  	
-		  }
-		}
-	);
+	// Load the image
+	var data = require('fs').readFileSync('snapshot.png');
+	// Make post request on media endpoint. Pass file data as media parameter
+	client.post('media/upload', {media: data}, function(error, media, response) {
+	  if (!error) {
+	    // If successful, a media object will be returned.
+	    // console.log(media);
+	    var message = {
+				// Add a mention to the user who the command is directed to #!important
+	    	status: status 
+	    	, in_reply_to_status_id: reply // Add the reply tweet string id
+	      , media_ids: media.media_id_string // Pass the media id string
+	    }
+
+	    client.post('statuses/update', message, function(error, tweet, response) {
+	      if (!error) {
+			  	console.log('Tweet posted!');
+	        // console.log(tweet);
+			  } else {
+			  	console.log('Error on posting!');
+			  	console.log(error);		  	
+			  }
+	    });
+
+	  } else {
+	  	console.log('Error uploading image to Twitter!');
+	  	console.log(error);		  		  	
+	  }
+	});
 }
 
 // 1. Get the tweet by Id to get the original tweet from 'in_reply_to_status_id_str'
