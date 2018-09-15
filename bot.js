@@ -85,10 +85,10 @@ function listenToMasses() {
 		'statuses/filter', 
 		{
 			track: '@istipidi'
-		}, 
-		{
-			port: process.env.PORT || 5000  // This line is necessary when deploying on Heroku
 		}
+		// ,	{
+		// 	port: process.env.PORT || 5000  // This line is necessary when deploying on Heroku
+		// }
 	);
 
   // if (stream.isRunning())
