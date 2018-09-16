@@ -76,17 +76,22 @@ function generateSarcasm(tid, reply, one, two, tweet) {
 				console.log('Error getting parent tweet. Not posting');
 				// console.log(err);
 	      dfd.reject(err);
-			} else {
+			} else {			
 				console.log('Got parent tweet data succesfully!');
 				// console.log(data);
-				console.log(data.full_text);
-				// Add a mention to the user who invoked the command #!important
-				var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.full_text);
-				var url = 'https://twitter.com/' + data.user.screen_name + '/status/' + data.id_str;
-				console.log(text);
-				console.log(url);
-				console.log('Reply to: ' + tid + ' for ' + two);
-				dfd.resolve(text, tid, url, data);
+				if (data.user.screen_name == 'istipidi') {
+					console.log('I would not ridicule myself. Quitting!');
+					dfd.reject();
+				} else {
+					console.log(data.full_text);
+					// Add a mention to the user who invoked the command #!important
+					var text = '@' + one + ' @' + two + ' ' + cinvirtString(data.full_text);
+					var url = 'https://twitter.com/' + data.user.screen_name + '/status/' + data.id_str;
+					console.log(text);
+					console.log(url);
+					console.log('Reply to: ' + tid + ' for ' + two);
+					dfd.resolve(text, tid, url, data);					
+				}
 			}
 		}
 	);
